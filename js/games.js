@@ -40,6 +40,8 @@ const WHATIF_GAMES = [
   {
     id: "white-hall",
     title: "하얀 복도",
+    playable: true,
+    externalUrl: "https://claude.ai/artifact/5Fk9kwE86gs3c3DwfBSTPc",
     genres: ["추리", "공포", "탈출"],
     desc: "형광등이 깜빡이는 끝없는 복도와 바닥에 떨어진 낡은 단체사진. 단서를 모아 이곳을 빠져나가세요.",
     intro: [
@@ -51,6 +53,8 @@ const WHATIF_GAMES = [
   {
     id: "barefoot",
     title: "맨발이라 부르지 마라",
+    playable: true,
+    externalUrl: "https://claude.ai/artifact/FFNoB4Q3p7bjDfE5eXv3EG",
     genres: ["공포", "수사", "추리"],
     desc: "벽에 못 박힌 현상수배 전단, 그 옆에 찍힌 젖은 맨발 자국. 그 이름만은 부르면 안 된다.",
     intro: [
@@ -65,7 +69,9 @@ const WHATIF_GAMES = [
     intro: ["비상등이 붉게 물든 27층. 계단 아래에서 철문을 두드리는 소리가 올라온다.", "호주머니에는 옥상 열쇠와 어젯밤 받은 쪽지 한 장이 있다."],
   },
   {
-    id: "park-castaway", title: "박씨 표류기", genres: ["생존", "모험"],
+    id: "park-castaway", title: "박씨 표류기", genres: ["생존", "모험"], playable: true,
+    // 본편: claude.ai 아티팩트 '무인도 생존 시뮬레이션 3D' (새 탭에서 열림)
+    externalUrl: "https://claude.ai/artifact/EbHoViyDeausMoYhhs57Ts",
     desc: "폭풍에 배를 잃은 박씨가 이름 모를 섬에 떠밀려 옵니다. 밀물이 잔해를 삼키기 전에 챙길 것을 고르고, 숲에서 밤을 보낼 곳을 찾아야 합니다.",
     intro: [
       "파도가 발목을 적시자 박씨는 눈을 떴다. 어젯밤 타고 있던 파란 배가 모래톱 위에 뒤집혀 있었다.",

@@ -1,4 +1,6 @@
 const CONTINUE_URL = "play.html?continue=1";
+const PLAYABLE_FILTER = "playable";
+const CATALOG_FILTERS = ["전체", PLAYABLE_FILTER, ...WHATIF_FILTERS.slice(1)];
 const escapeText = (value) => String(value).replace(/[&<>"']/g, (character) => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
 }[character]));
@@ -6,9 +8,10 @@ const pixelIcon = (name) => '<span class="pixel-icon pixel-' + name + '" aria-hi
 
 const query = new URLSearchParams(location.search);
 const initialGenre = query.get("genre") || query.get("tab");
+const initialFilter = query.get("filter") === PLAYABLE_FILTER ? PLAYABLE_FILTER : initialGenre;
 const state = {
   view: query.get("view") === "all" ? "all" : "rec",
-  genre: WHATIF_FILTERS.includes(initialGenre) ? initialGenre : "전체",
+  filter: CATALOG_FILTERS.includes(initialFilter) ? initialFilter : "전체",
   search: "",
   current: gameById(query.get("game"))?.id ?? null,
 };
@@ -21,12 +24,15 @@ const search = document.getElementById("search");
 
 function visibleGames() {
   const keyword = state.search.trim().toLocaleLowerCase("ko");
-  const works = WHATIF_GAMES.filter((work) =>
-    (state.genre === "전체" || work.genres.includes(state.genre)) &&
-    (!keyword || [work.title, ...work.genres].some((value) => value.toLocaleLowerCase("ko").includes(keyword)))
-  );
+  const { filter } = state;
+  const works = WHATIF_GAMES.filter((work) => {
+    const matchesFilter = filter === PLAYABLE_FILTER ? work.playable : filter === "전체" || work.genres.includes(filter);
+    return matchesFilter && (!keyword || [work.title, ...work.genres].some((value) => value.toLocaleLowerCase("ko").includes(keyword)));
+  });
   if (state.view === "all") return works.sort((a, b) => a.title.localeCompare(b.title, "ko"));
-  if (state.genre !== "전체") return works.sort((a, b) => a.genres.indexOf(state.genre) - b.genres.indexOf(state.genre));
+  if (filter !== "전체" && filter !== PLAYABLE_FILTER) {
+    return works.sort((a, b) => a.genres.indexOf(filter) - b.genres.indexOf(filter));
+  }
   return works;
 }
 
@@ -79,9 +85,10 @@ function renderHero(works, save) {
 
 function renderList(works) {
   document.getElementById("list-count").textContent = works.length + "편";
-  filters.innerHTML = WHATIF_FILTERS.map((genre) =>
-    '<button type="button" data-genre="' + genre + '" aria-pressed="' + (state.genre === genre) + '">' + genre + '</button>'
-  ).join("");
+  filters.innerHTML = CATALOG_FILTERS.map((filter) => {
+    const label = filter === PLAYABLE_FILTER ? "플레이 가능한 게임" : filter;
+    return '<button type="button" data-filter="' + filter + '" aria-pressed="' + (state.filter === filter) + '">' + label + '</button>';
+  }).join("");
   list.innerHTML = works.map((work) => {
     const selected = work.id === state.current;
     return [
@@ -104,7 +111,8 @@ function render() {
 
   const params = new URLSearchParams();
   if (state.view === "all") params.set("view", "all");
-  if (state.genre !== "전체") params.set("genre", state.genre);
+  if (state.filter === PLAYABLE_FILTER) params.set("filter", PLAYABLE_FILTER);
+  else if (state.filter !== "전체") params.set("genre", state.filter);
   if (state.current) params.set("game", state.current);
   const suffix = params.size ? "?" + params : "";
   if (location.protocol !== "file:") history.replaceState(null, "", location.pathname + suffix);
@@ -122,11 +130,11 @@ function move(step) {
 }
 
 document.addEventListener("click", (event) => {
-  const button = event.target.closest("[data-genre],[data-game],[data-move],[data-nav]");
+  const button = event.target.closest("[data-filter],[data-game],[data-move],[data-nav]");
   if (!button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-  const { genre, game, move: direction, nav: view } = button.dataset;
-  if (genre) {
-    state.genre = genre;
+  const { filter, game, move: direction, nav: view } = button.dataset;
+  if (filter) {
+    state.filter = filter;
     state.current = null;
     render();
     filters.querySelector('[aria-pressed="true"]').focus();
@@ -140,7 +148,7 @@ document.addEventListener("click", (event) => {
   } else if (view) {
     event.preventDefault();
     state.view = view;
-    state.genre = "전체";
+    state.filter = "전체";
     state.current = null;
     state.search = search.value = "";
     render();

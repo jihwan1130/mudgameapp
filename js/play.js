@@ -69,10 +69,14 @@ async function start() {
   const after = document.getElementById("after");
   after.hidden = false;
   after.innerHTML = [
-    '<p class="story-notice">' + (saved ? '첫 장면을 저장했어요. ' : '') + '선택지가 있는 본편은 준비 중이에요.</p>',
+    '<p class="story-notice">' + (saved ? '첫 장면을 저장했어요. ' : '')
+      + (work.externalUrl ? '본편은 새 탭에서 열려요.' : '선택지가 있는 본편은 준비 중이에요.') + '</p>',
     '<div class="story-actions">',
+    work.externalUrl
+      ? '<a class="terminal-button primary" href="' + escapeText(work.externalUrl) + '" target="_blank" rel="noopener noreferrer">게임 시작 ↗</a>'
+      : '',
     '<a class="terminal-button" href="' + playUrl(work.id) + '">처음부터</a>',
-    '<a class="terminal-button primary" href="' + gameUrl(work.id) + '">작품 목록으로</a>',
+    '<a class="terminal-button' + (work.externalUrl ? '' : ' primary') + '" href="' + gameUrl(work.id) + '">작품 목록으로</a>',
     '</div>',
   ].join("");
 }
