@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#100f15" />
+  <title>플레이 — WHATIF</title>
+  <link rel="icon" href="assets/whatif.png" type="image/png" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/terminal.css" />
+</head>
+<body class="terminal-site">
+  <header class="site-header">
+    <div class="site-frame reading-frame topbar">
+      <a href="index.html" class="brand" aria-label="WHATIF 홈">
+        <img src="assets/whatif.png" alt="" width="1240" height="368" />
+      </a>
+      <nav class="site-nav" aria-label="메뉴">
+        <a href="index.html?view=all"><span class="pixel-icon pixel-files" aria-hidden="true"></span>전체 작품</a>
+        <a href="mypage.html"><span class="pixel-icon pixel-user" aria-hidden="true"></span>마이페이지</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="play" class="site-frame play-main"></main>
+
+  <footer class="site-footer">
+    <p class="site-frame reading-frame footer-line">
+      <span class="prompt">guest@whatif:~$ <span class="term-cursor">_</span></span>
+      <span id="status" role="status"></span>
+    </p>
+  </footer>
+
+  <script src="js/games.js"></script>
+  <script src="js/play.js"></script>
+</body>
+</html>

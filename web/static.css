@@ -1,0 +1,70 @@
+/*
+  whatif 정적 사이트(index.html / mypage.html) 스타일 소스 — Tailwind v4
+  수정 후 다시 빌드:  cd web && npm run build:static
+  → ../css/style.css 생성 (html·js 에 쓴 클래스만 골라서 담김)
+*/
+@import "tailwindcss" source(none);
+@source "../index.html";
+@source "../mypage.html";
+@source "../play.html";
+@source "../js";
+
+/* ---------- 디자인 토큰 ---------- */
+@theme {
+  --color-ink: #f5f0e8;
+  --color-sub: #c2b8c9;
+  --color-line: #504757;
+  --color-soft: #252131;
+  --color-panel: #191721;
+  --color-console: #100f15;
+  --color-term: #ffda42;
+  --color-up: #ff9fa7;
+  --color-event: #b5a7f1;
+
+  --font-sans: "Galmuri11", "Malgun Gothic", system-ui, sans-serif;
+  --font-mono: "Galmuri11", "D2Coding", monospace;
+
+  --radius-card: 0px;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--color-console);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 가로 스크롤 줄 스크롤바 숨기기 */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* ---------- 터미널 포인트 ---------- */
+.term-cursor { animation: term-blink 1s steps(1) infinite; }
+@keyframes term-blink { 50% { opacity: 0; } }
+
+/* 카드 호버: 얇은 스캔라인이 한 번 지나감 */
+.scan { position: relative; overflow: hidden; }
+.scan::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: -4%;
+  height: 2px;
+  background: var(--color-term);
+  box-shadow: 0 0 8px var(--color-term), 0 0 2px var(--color-term);
+  opacity: 0;
+  pointer-events: none;
+}
+.group:hover .scan::after { animation: scan-pass 0.75s ease-out 1; }
+@keyframes scan-pass {
+  0% { top: -4%; opacity: 0.95; }
+  100% { top: 104%; opacity: 0; }
+}
+
+/* 인덱스: 게임이 바뀔 때 살짝 페이드 */
+.fade-in { animation: fade-in 0.35s ease-out; }
+@keyframes fade-in { from { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .term-cursor, .group:hover .scan::after, .fade-in { animation: none; }
+}

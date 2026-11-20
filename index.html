@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#100f15" />
+  <title>WHATIF — 작품 아카이브</title>
+  <meta name="description" content="플레이어의 선택에 따라 이야기가 갈라지는 텍스트 게임과 인터랙티브 소설." />
+  <link rel="icon" href="assets/whatif.png" type="image/png" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/terminal.css" />
+</head>
+<body class="terminal-site">
+  <header class="site-header">
+    <div class="site-frame topbar">
+      <a href="index.html" class="brand" aria-label="WHATIF 홈">
+        <img src="assets/whatif.png" alt="" width="1240" height="368" />
+      </a>
+      <nav id="nav" class="site-nav" aria-label="메뉴"></nav>
+      <label class="header-search">
+        <span class="pixel-icon pixel-search" aria-hidden="true"></span>
+        <input id="search" type="search" placeholder="제목 또는 장르 검색" aria-label="작품 검색" />
+      </label>
+    </div>
+  </header>
+
+  <main class="site-frame archive-main">
+    <div class="archive-heading">
+      <h1><span class="pixel-icon pixel-folder" aria-hidden="true"></span> 작품 아카이브</h1>
+      <p id="archive-count" class="archive-count"></p>
+    </div>
+    <section id="hero" class="pixel-window work-banner" aria-label="선택한 작품"></section>
+
+    <section class="pixel-window catalog" aria-labelledby="list-heading">
+      <div class="window-bar catalog-heading">
+        <h2 id="list-heading" class="window-label"><span class="pixel-icon pixel-files" aria-hidden="true"></span> 작품 목록</h2>
+        <span class="window-lines" aria-hidden="true"></span>
+        <span id="list-count" class="catalog-count" role="status"></span>
+      </div>
+      <div id="filters" class="genre-filters" role="group" aria-label="장르"></div>
+      <div id="list" class="poster-grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-frame footer-line">
+      <span class="prompt">guest@whatif:~$ <span class="term-cursor">_</span></span>
+      <span class="keyboard-hint"><kbd>←</kbd> <kbd>→</kbd> 작품 전환</span>
+    </div>
+  </footer>
+
+  <script src="js/games.js"></script>
+  <script src="js/index.js"></script>
+</body>
+</html>
