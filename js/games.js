@@ -5,6 +5,19 @@
 
 const WHATIF_GAMES = [
   {
+    id: "room-305",
+    title: "305호",
+    genres: ["공포", "탈출"],
+    playable: true,
+    externalUrl: "https://claude.ai/artifact/X2MMye9Tz473snHk1n7hwh",
+    desc: "문패에 적힌 숫자는 305. 잠긴 방 안을 살펴보고 이곳을 빠져나갈 단서를 찾으세요.",
+    intro: [
+      "복도 불이 꺼지자 등 뒤에서 문이 닫혔다.",
+      "손잡이를 돌려 보았지만 문은 움직이지 않았다.",
+      "문 아래로 복도 불빛이 다시 들어왔다. 그 빛을 가리는 발이 문 앞에서 멈췄다.",
+    ],
+  },
+  {
     id: "star-post",
     title: "별빛 우체국",
     playable: true,
