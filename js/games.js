@@ -83,7 +83,8 @@ const WHATIF_GAMES = [
     ],
   },
   {
-    id: "sf-5", title: "2099 서울 야간택시", genres: ["SF", "추리"],
+    id: "sf-5", title: "2099 서울 야간택시", genres: ["SF", "추리"], playable: true,
+    externalUrl: "https://claude.ai/artifact/G3Uf6Q1V82ZZ5PBn8UAbb4",
     desc: "심야 택시의 마지막 손님이 50년 전에 사라진 주소를 부릅니다. 내비게이션은 경로를 찾았습니다.",
     intro: ["잠수교를 건너자 조수석 창문에 픽업 주소가 떠오른다.", "손님은 뒷좌석에 타자마자 룸미러를 가리킨다. “제 얼굴은 보지 말아 주세요.”"],
   },
