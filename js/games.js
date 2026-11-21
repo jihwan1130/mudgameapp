@@ -7,6 +7,8 @@ const WHATIF_GAMES = [
   {
     id: "star-post",
     title: "별빛 우체국",
+    playable: true,
+    externalUrl: "https://claude.ai/artifact/PtCW5eB9EycSgZtdnC69oJ",
     genres: ["판타지", "모험"],
     desc: "별이 떨어진 밤에만 문을 여는 우체국. 주인 없는 편지를 들고 하늘 끝 마을까지 배달을 떠나요.",
     intro: [
@@ -64,7 +66,8 @@ const WHATIF_GAMES = [
     ],
   },
   {
-    id: "survival-1", title: "좀비 아파트 27층", genres: ["생존", "공포"],
+    id: "survival-1", title: "좀비 아파트 27층", genres: ["생존", "공포"], playable: true,
+    externalUrl: "https://claude.ai/artifact/28cYVAHQzDPxSa2xaGMkrq",
     desc: "사람이 사라진 아파트 27층. 막힌 계단과 잠긴 옥상 사이에서 내려갈 길을 찾아야 합니다.",
     intro: ["비상등이 붉게 물든 27층. 계단 아래에서 철문을 두드리는 소리가 올라온다.", "호주머니에는 옥상 열쇠와 어젯밤 받은 쪽지 한 장이 있다."],
   },
