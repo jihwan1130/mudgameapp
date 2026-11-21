@@ -206,7 +206,21 @@ const WHATIF_GAMES = [
   ...work,
   poster: `assets/posters/${work.id}.webp`,
   backdrop: `assets/banners/${work.id}.webp`,
+  episodes: work.genres.includes("단편") ? 6 : 12,
 }));
+
+// 결제 정책 (시뮬레이션). 1코인 = 100원.
+const WHATIF_FREE_IDS = ["barefoot", "star-post"];
+const WHATIF_PRICE = {
+  freeEpisodes: 3, // 초반 1~3화 무료 (유입용)
+  episode: 1,      // 회차 결제: 화당 1코인
+  reroll: 3,       // 분기 재선택권: 1회 3코인
+  hidden: 5,       // 히든 엔딩 해금: 건당 5코인
+  passWon: 3900,   // 월 구독 패스 (가설, 검증 후 도입)
+};
+const isFreeGame = (id) => WHATIF_FREE_IDS.includes(gameById(id)?.id);
+// 작품 결제(전 회차 소장): 유료 회차 합계에서 20% 할인
+const workPrice = (work) => Math.ceil((work.episodes - WHATIF_PRICE.freeEpisodes) * WHATIF_PRICE.episode * 0.8);
 
 const WHATIF_FILTERS = ["전체", "로맨스", "일상", "판타지", "추리", "공포", "수사", "생존", "SF", "분기소설", "단편", "모험", "탈출"];
 const WHATIF_ALIASES = { "horror-1": "white-hall", "mystery-1": "barefoot" };

@@ -11,7 +11,7 @@ const $main = document.getElementById("main");
 const MP_TABS = [
   { key: "library", label: "내 서재" },
   { key: "endings", label: "엔딩 컬렉션" },
-  { key: "cash", label: "캐시 내역" },
+  { key: "cash", label: "코인 내역" },
   { key: "purchases", label: "구매 내역" },
   { key: "wish", label: "찜한 작품" },
   { key: "settings", label: "계정 설정" },
@@ -47,10 +47,10 @@ function ProfileCard() {
     </div>
     <div class="flex items-center justify-between gap-4 rounded-card bg-soft px-5 py-4 md:ml-auto md:min-w-[320px]">
       <div>
-        <p class="text-xs text-sub">보유 캐시</p>
-        <p class="font-mono text-2xl font-bold">${won(App.state.cash)}</p>
+        <p class="text-xs text-sub">보유 코인 <span class="font-mono">(1코인 = ₩100)</span></p>
+        <p class="font-mono text-2xl font-bold text-term">${coinLabel(Wallet.coins)}</p>
       </div>
-      <button data-open-cash class="h-10 shrink-0 rounded-full bg-term px-5 text-sm font-semibold text-console hover:bg-term/85">캐시 충전</button>
+      <button data-open-cash class="h-10 shrink-0 rounded-full bg-term px-5 text-sm font-semibold text-console hover:bg-term/85">코인 충전</button>
     </div>
     </div>
   </section>`;
@@ -126,16 +126,16 @@ function EndingsTab() {
   }).join("")}</div>`;
 }
 
-/* ---------------- 3) 캐시 내역 ---------------- */
-const CASH_TYPES = [["all", "전체"], ["charge", "충전"], ["use", "사용"], ["refund", "환불"]];
+/* ---------------- 3) 코인 내역 ---------------- */
+const CASH_TYPES = [["all", "전체"], ["charge", "충전"], ["use", "사용"], ["reward", "보상"]];
 const PERIODS = [[1, "1개월"], [3, "3개월"], [6, "6개월"], [0, "전체"]];
-const TYPE_LABEL = { charge: "충전", use: "사용", refund: "환불" };
-const TYPE_STYLE = { use: "bg-up/10 text-up", charge: "bg-term/10 text-term", refund: "bg-event/10 text-event" };
+const TYPE_LABEL = { charge: "충전", use: "사용", refund: "환불", reward: "보상" };
+const TYPE_STYLE = { use: "bg-up/10 text-up", charge: "bg-term/10 text-term", refund: "bg-event/10 text-event", reward: "bg-event/10 text-event" };
 
 function CashHistoryTab() {
   const from = new Date(MOCK_TODAY);
   if (ui.cashMonths) from.setMonth(from.getMonth() - ui.cashMonths);
-  const rows = App.state.history.filter(
+  const rows = Wallet.history.filter(
     (h) => (ui.cashType === "all" || h.type === ui.cashType) && (!ui.cashMonths || new Date(h.date) >= from)
   );
 
@@ -169,13 +169,13 @@ function CashHistoryTab() {
             <td class="whitespace-nowrap px-4 py-3 font-mono text-xs text-sub">${ymd(h.date)}</td>
             <td class="px-4 py-3"><span class="rounded-full px-2 py-0.5 text-xs font-semibold ${TYPE_STYLE[h.type]}">${TYPE_LABEL[h.type]}</span></td>
             <td class="px-4 py-3">${esc(h.desc)}</td>
-            <td class="whitespace-nowrap px-4 py-3 text-right font-mono font-semibold ${h.amount >= 0 ? "text-term" : "text-up"}">${signedWon(h.amount)}</td>
-            <td class="whitespace-nowrap px-4 py-3 text-right font-mono text-sub">${won(h.balance)}</td>
+            <td class="whitespace-nowrap px-4 py-3 text-right font-mono font-semibold ${h.amount >= 0 ? "text-term" : "text-up"}">${h.type === "reward" ? "재선택권 +1" : `${h.amount > 0 ? "+" : ""}${coinLabel(h.amount)}`}</td>
+            <td class="whitespace-nowrap px-4 py-3 text-right font-mono text-sub">${coinLabel(h.balance)}</td>
           </tr>`).join("") : `<tr><td colspan="5" class="px-4 py-12 text-center text-sm text-sub"><span class="font-mono">[empty]</span> 이 기간에는 내역이 없어요</td></tr>`}
         </tbody>
       </table>
     </div>
-    <p class="mt-3 text-right text-xs text-sub">현재 잔액 <b class="font-mono text-ink">${won(App.state.cash)}</b></p>`;
+    <p class="mt-3 text-right text-xs text-sub">현재 잔액 <b class="font-mono text-ink">${coinLabel(Wallet.coins)}</b></p>`;
 }
 
 /* ---------------- 4) 구매 내역 ---------------- */
@@ -188,7 +188,7 @@ function PurchasesTab() {
         <tr>
           <th class="px-4 py-3 font-medium">작품명</th>
           <th class="px-4 py-3 font-medium">구매 방식</th>
-          <th class="px-4 py-3 text-right font-medium">결제 캐시</th>
+          <th class="px-4 py-3 text-right font-medium">결제 코인</th>
           <th class="px-4 py-3 font-medium">구매일</th>
           <th class="px-4 py-3 font-medium">대여 남은 기간</th>
         </tr>
@@ -203,7 +203,7 @@ function PurchasesTab() {
           return `<tr class="hover:bg-soft">
             <td class="px-4 py-3"><a href="${gameUrl(w.id)}" class="flex items-center gap-3 hover:text-term">${Thumb(w, { cls: "aspect-[2/3] w-9 shrink-0 rounded-md" })}<span class="font-medium">${esc(w.title)}</span></a></td>
             <td class="px-4 py-3"><span class="rounded-full px-2.5 py-0.5 text-xs font-semibold ${METHOD_STYLE[p.method]}">${p.method}${p.episodes ? ` ${p.episodes}화` : ""}</span></td>
-            <td class="whitespace-nowrap px-4 py-3 text-right font-mono">${won(p.paid)}</td>
+            <td class="whitespace-nowrap px-4 py-3 text-right font-mono">${coinLabel(p.paid)}</td>
             <td class="whitespace-nowrap px-4 py-3 font-mono text-xs text-sub">${ymd(p.date)}</td>
             <td class="px-4 py-3 text-xs">${left}</td>
           </tr>`;
@@ -283,7 +283,7 @@ function render() {
     $main.innerHTML = `<div class="mx-auto max-w-md py-24 text-center">
       <p class="font-mono text-sm text-up">[401] unauthorized</p>
       <h1 class="mt-2 text-2xl font-bold">로그인이 필요해요</h1>
-      <p class="mt-2 text-sm text-sub">내 서재, 엔딩 컬렉션, 캐시 내역은 로그인 후 볼 수 있어요.</p>
+      <p class="mt-2 text-sm text-sub">내 서재, 엔딩 컬렉션, 코인 내역은 로그인 후 볼 수 있어요.</p>
       <button data-login class="mt-6 h-11 rounded-full bg-term px-8 font-semibold text-console">로그인</button>
     </div>`;
     return;
@@ -300,7 +300,8 @@ function render() {
 }
 
 render();
-App.onChange(render); // 로그인/로그아웃 · 충전 시 다시 그리기
+App.onChange(render); // 로그인/로그아웃 시 다시 그리기
+Wallet.onChange(render); // 충전 · 결제 시 다시 그리기
 
 /* ---------------- 이벤트 ---------------- */
 $main.addEventListener("click", (e) => {

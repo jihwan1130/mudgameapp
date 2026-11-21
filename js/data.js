@@ -36,7 +36,7 @@ const WORKS = WHATIF_GAMES.map((work, index) => {
     author: AUTHORS[(Math.max(0, familyIndex) * 3 + ordinal - 1) % AUTHORS.length],
     endings: short ? 2 + Math.floor(rnd(seed) * 3) : 3 + Math.floor(rnd(seed) * 9),
     avgPlayMin: short ? 5 + Math.floor(rnd(seed + 6) * 10) : 25 + Math.floor(rnd(seed + 6) * 150),
-    isFree: rnd(seed + 7) < 0.18,
+    isFree: isFreeGame(work.id),
     badges,
   };
 });
@@ -59,10 +59,9 @@ const USER = {
   handle: "choice_master",
   email: "player@whatif.example",
   joinedAt: daysAgo(412),
-  cash: 12300,
 };
 
-const PURCHASED_IDS = ["horror-1", "mystery-1", "branch-3", "survival-1", "sf-4", "fantasy-2", "romance-1", "short-5"];
+const PURCHASED_IDS = ["horror-1", "branch-3", "survival-1", "sf-4", "fantasy-2", "romance-1", "short-5"];
 
 const PLAYING = [
   { workId: "horror-1", progress: 64, lastSave: "3장 · 복도 끝 철문 앞", savedAt: daysAgo(0) },
@@ -89,54 +88,18 @@ const ENDINGS = [
   ] },
 ];
 
-const RAW_CASH = [
-  { date: daysAgo(170), type: "charge", desc: "신용카드 충전", amount: 30000 },
-  { date: daysAgo(160), type: "use", desc: "백야 호텔 703호 · 소장", amount: -3500 },
-  { date: daysAgo(130), type: "use", desc: "좀비 아파트 27층 · 소장", amount: -4000 },
-  { date: daysAgo(118), type: "refund", desc: "좀비 아파트 27층 · 결제 취소", amount: 4000 },
-  { date: daysAgo(96), type: "use", desc: "기억 판매소 · 대여 7일", amount: -1500 },
-  { date: daysAgo(70), type: "charge", desc: "카카오페이 충전", amount: 10000 },
-  { date: daysAgo(64), type: "use", desc: "세 번째 선택지 · 소장", amount: -4500 },
-  { date: daysAgo(40), type: "use", desc: "용사 파티의 짐꾼입니다 · 회차구매 3화", amount: -900 },
-  { date: daysAgo(33), type: "use", desc: "계약 연애 100일 · 소장", amount: -3000 },
-  { date: daysAgo(21), type: "use", desc: "좀비 아파트 27층 · 소장", amount: -4000 },
-  { date: daysAgo(14), type: "charge", desc: "토스페이 충전", amount: 5000 },
-  { date: daysAgo(9), type: "use", desc: "맨발이라 부르지 마라 · 소장", amount: -3500 },
-  { date: daysAgo(6), type: "use", desc: "자정의 자판기 · 소장", amount: -1000 },
-  { date: daysAgo(2), type: "use", desc: "하얀 복도 · 소장", amount: -4000 },
-];
-
-// 잔액은 현재 보유 캐시에서 거꾸로 맞춰 계산 (최신순)
-const CASH_HISTORY = (() => {
-  const total = RAW_CASH.reduce((s, e) => s + e.amount, 0);
-  let bal = USER.cash - total;
-  return RAW_CASH.map((e, i) => {
-    bal += e.amount;
-    return { ...e, id: `c${i + 1}`, balance: bal };
-  }).reverse();
-})();
+// 코인 잔액 · 내역은 js/wallet.js (Wallet) 에서 관리해요.
 
 const PURCHASES = [
-  { workId: "horror-1", method: "소장", paid: 4000, date: daysAgo(2) },
-  { workId: "short-5", method: "소장", paid: 1000, date: daysAgo(6) },
-  { workId: "mystery-1", method: "소장", paid: 3500, date: daysAgo(9) },
-  { workId: "survival-1", method: "소장", paid: 4000, date: daysAgo(21) },
-  { workId: "romance-1", method: "소장", paid: 3000, date: daysAgo(33) },
-  { workId: "fantasy-1", method: "회차구매", paid: 900, date: daysAgo(40), episodes: 3 },
-  { workId: "branch-3", method: "소장", paid: 4500, date: daysAgo(64) },
-  { workId: "sf-4", method: "대여", paid: 1500, date: daysAgo(96), rentalDaysLeft: 0 },
-  { workId: "mystery-9", method: "소장", paid: 3500, date: daysAgo(160) },
-  { workId: "horror-3", method: "대여", paid: 1200, date: daysAgo(1), rentalDaysLeft: 6 },
+  { workId: "horror-1", method: "소장", paid: 8, date: daysAgo(2) },
+  { workId: "short-5", method: "소장", paid: 3, date: daysAgo(6) },
+  { workId: "survival-1", method: "소장", paid: 8, date: daysAgo(21) },
+  { workId: "romance-1", method: "소장", paid: 8, date: daysAgo(33) },
+  { workId: "fantasy-1", method: "회차구매", paid: 3, date: daysAgo(40), episodes: 3 },
+  { workId: "branch-3", method: "소장", paid: 8, date: daysAgo(64) },
+  { workId: "sf-4", method: "대여", paid: 4, date: daysAgo(96), rentalDaysLeft: 0 },
+  { workId: "mystery-9", method: "소장", paid: 8, date: daysAgo(160) },
+  { workId: "horror-3", method: "대여", paid: 4, date: daysAgo(1), rentalDaysLeft: 6 },
 ];
 
 const WISHLIST_IDS = ["horror-5", "mystery-3", "branch-1", "fantasy-6", "sf-7", "romance-4", "survival-4", "short-2"];
-
-const CASH_PRODUCTS = [
-  { price: 1000, bonusRate: 0 },
-  { price: 5000, bonusRate: 0 },
-  { price: 10000, bonusRate: 5 },
-  { price: 30000, bonusRate: 10 },
-  { price: 50000, bonusRate: 15 },
-];
-
-const PAY_METHODS = ["신용/체크카드", "카카오페이", "네이버페이", "토스페이", "휴대폰 결제"];

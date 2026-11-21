@@ -1,5 +1,5 @@
 // =========================================================
-//  whatif — 공통: 포맷 · 아이콘 · 썸네일/카드 · 헤더/푸터 · 캐시 모달 · 토스트
+//  whatif — 공통: 포맷 · 아이콘 · 썸네일/카드 · 헤더/푸터 · 코인 충전 · 토스트
 //  (빌드 없이 file:// 로 열어도 동작하도록 일반 <script> 로 불러와요)
 // =========================================================
 
@@ -38,7 +38,7 @@ const Icon = {
 };
 
 /* ---------------- 앱 상태 (mock) ----------------
-   로그인 여부 · 캐시 · 캐시 내역을 localStorage 에 저장해서
+   로그인 여부를 (코인은 wallet.js 의 Wallet) localStorage 에 저장해서
    index.html ↔ mypage.html 을 오가도 유지돼요. */
 const App = (() => {
   const KEY = "whatif_demo_state";
@@ -46,8 +46,6 @@ const App = (() => {
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch {}
   const state = {
     loggedIn: saved.loggedIn ?? true,
-    cash: saved.cash ?? USER.cash,
-    history: saved.history ?? CASH_HISTORY,
   };
   const listeners = new Set();
   const save = () => {
@@ -59,24 +57,7 @@ const App = (() => {
     onChange: (fn) => listeners.add(fn),
     login() { state.loggedIn = true; save(); toast(`${USER.nickname}님, 반가워요!`); },
     logout() { state.loggedIn = false; save(); toast("로그아웃 되었어요"); },
-    charge(price, bonus, method) {
-      const add = price + bonus;
-      state.cash += add;
-      state.history = [
-        {
-          id: `c${Date.now()}`,
-          date: MOCK_TODAY.toISOString(),
-          type: "charge",
-          desc: `${method} 충전${bonus ? ` (+보너스 ${bonus.toLocaleString("ko-KR")})` : ""}`,
-          amount: add,
-          balance: state.cash,
-        },
-        ...state.history,
-      ];
-      save();
-      toast(`₩${add.toLocaleString("ko-KR")} 충전 완료 (데모)`);
-    },
-    reset() { localStorage.removeItem(KEY); location.reload(); },
+    reset() { localStorage.removeItem(KEY); Wallet.reset(); },
   };
 })();
 
@@ -212,7 +193,7 @@ function renderHeader(activeTab) {
       <div class="ml-6 hidden max-w-[420px] flex-1 md:block">${SearchBox("pc")}</div>
       <div class="ml-auto flex items-center gap-1 md:gap-2">
         <button data-act="m-search" class="grid size-10 place-items-center rounded-full hover:bg-soft md:hidden" aria-label="검색 열기">${Icon.search()}</button>
-        <button data-act="cash" class="flex h-10 items-center gap-1.5 rounded-full px-2.5 hover:bg-soft" aria-label="캐시 관리" title="캐시 충전">
+        <button data-act="cash" class="flex h-10 items-center gap-1.5 rounded-full px-2.5 hover:bg-soft" aria-label="코인 충전" title="코인 충전">
           ${Icon.wallet()}<span data-cash-compact class="text-xs font-semibold tabular-nums"></span>
         </button>
         <a href="mypage.html" class="grid size-10 place-items-center rounded-full hover:bg-soft" aria-label="마이페이지">${Icon.user()}</a>
@@ -227,7 +208,7 @@ function renderHeader(activeTab) {
 
   const auth = el.querySelector("[data-auth]");
   const paintAuth = () => {
-    el.querySelector("[data-cash-compact]").textContent = App.state.loggedIn ? compact(App.state.cash) : "-";
+    el.querySelector("[data-cash-compact]").textContent = App.state.loggedIn ? `${compact(Wallet.coins)}코인` : "-";
     auth.innerHTML = App.state.loggedIn
       ? `<div class="relative" data-profile>
           <button data-act="profile" aria-haspopup="menu" aria-expanded="false" class="flex items-center gap-1 rounded-full py-1 pl-1 pr-2 hover:bg-soft">
@@ -237,7 +218,7 @@ function renderHeader(activeTab) {
           <div role="menu" data-menu hidden class="absolute right-0 top-12 z-50 w-48 overflow-hidden rounded-card border border-line bg-panel py-1 shadow-xl">
             <p class="border-b border-line px-4 py-2.5 text-sm"><b>${esc(USER.nickname)}</b><span class="block font-mono text-xs text-sub">@${esc(USER.handle)}</span></p>
             <a role="menuitem" href="mypage.html" class="block px-4 py-2.5 text-sm hover:bg-soft">마이페이지</a>
-            <button role="menuitem" data-act="cash" class="block w-full px-4 py-2.5 text-left text-sm hover:bg-soft">캐시 충전</button>
+            <button role="menuitem" data-act="cash" class="block w-full px-4 py-2.5 text-left text-sm hover:bg-soft">코인 충전</button>
             <button role="menuitem" data-act="logout" class="block w-full px-4 py-2.5 text-left text-sm text-sub hover:bg-soft">로그아웃</button>
           </div>
         </div>`
@@ -245,6 +226,7 @@ function renderHeader(activeTab) {
   };
   paintAuth();
   App.onChange(paintAuth);
+  Wallet.onChange(paintAuth);
 
   el.addEventListener("click", (e) => {
     const b = e.target.closest("[data-act]");
@@ -296,89 +278,9 @@ function renderFooter() {
     </div>`;
 }
 
-/* ---------------- 캐시 충전 모달 ----------------
-   결제 수단 선택 UI만 (실제 결제 연동 없음) */
+/* ---------------- 코인 충전 ----------------
+   실제 모달은 wallet.js 의 openCoinCharge (시뮬레이션) */
 function openCash() {
   if (!App.state.loggedIn) return toast("로그인 후 충전할 수 있어요");
-  let pi = 2;
-  let method = PAY_METHODS[0];
-
-  const wrap = document.createElement("div");
-  wrap.className = "fixed inset-0 z-50 flex items-end justify-center bg-black/45 sm:items-center";
-  document.body.appendChild(wrap);
-  document.body.style.overflow = "hidden";
-
-  const close = () => {
-    wrap.remove();
-    document.body.style.overflow = "";
-    window.removeEventListener("keydown", onKey);
-  };
-  const onKey = (e) => e.key === "Escape" && close();
-  window.addEventListener("keydown", onKey);
-
-  const paint = () => {
-    const p = CASH_PRODUCTS[pi];
-    const bonus = Math.round((p.price * p.bonusRate) / 100);
-    const cash = App.state.cash;
-    wrap.innerHTML = `<div role="dialog" aria-modal="true" aria-labelledby="cash-title" data-dialog
-        class="max-h-[92vh] w-full overflow-y-auto rounded-t-2xl bg-panel p-5 sm:max-w-[480px] sm:rounded-2xl sm:p-6">
-      <div class="flex items-center justify-between">
-        <h2 id="cash-title" class="text-lg font-bold">캐시 충전</h2>
-        <button data-m="close" aria-label="닫기" class="grid size-9 place-items-center rounded-full hover:bg-soft">${Icon.close()}</button>
-      </div>
-      <p class="mt-1 text-sm text-sub">보유 캐시 <b class="font-mono text-ink">${won(cash)}</b></p>
-
-      <h3 class="mt-5 text-sm font-semibold">충전 금액</h3>
-      <div class="mt-2 grid grid-cols-2 gap-2">
-        ${CASH_PRODUCTS.map((x, i) => {
-          const on = i === pi;
-          const xb = Math.round((x.price * x.bonusRate) / 100);
-          return `<button data-p="${i}" class="${cx(
-            "relative rounded-card border px-4 py-3 text-left transition-colors",
-            on ? "border-ink bg-term text-console" : "border-line hover:border-ink/40",
-            i === CASH_PRODUCTS.length - 1 && "col-span-2"
-          )}">
-            <span class="block text-base font-bold">${won(x.price)}</span>
-            <span class="text-xs ${on ? "text-console/70" : "text-sub"}">${
-              x.bonusRate
-                ? `+ 보너스 <b class="${on ? "text-term" : "text-up"}">${x.bonusRate}%</b> (${xb.toLocaleString("ko-KR")}캐시)`
-                : "기본 충전"
-            }</span>
-          </button>`;
-        }).join("")}
-      </div>
-
-      <h3 class="mt-5 text-sm font-semibold">결제 수단</h3>
-      <div class="mt-2 flex flex-wrap gap-2">
-        ${PAY_METHODS.map((m) => `<button data-pay="${m}" class="${cx(
-          "h-9 rounded-full border px-4 text-sm",
-          m === method ? "border-ink font-semibold" : "border-line text-sub hover:text-ink"
-        )}">${m}</button>`).join("")}
-      </div>
-
-      <dl class="mt-5 space-y-1.5 rounded-card bg-soft p-4 text-sm">
-        <div class="flex justify-between"><dt class="text-sub">충전 금액</dt><dd class="font-mono">${won(p.price)}</dd></div>
-        <div class="flex justify-between"><dt class="text-sub">보너스</dt><dd class="font-mono text-term">+${bonus.toLocaleString("ko-KR")}</dd></div>
-        <div class="flex justify-between border-t border-line pt-1.5 font-semibold"><dt>충전 후 캐시</dt><dd class="font-mono">${won(cash + p.price + bonus)}</dd></div>
-      </dl>
-
-      <button data-m="pay" class="mt-5 h-12 w-full rounded-card bg-term font-semibold text-console hover:bg-term/85">${won(p.price)} 결제하기</button>
-      <p class="mt-2 text-center text-xs text-sub">데모 화면이에요. 실제 결제는 진행되지 않아요.</p>
-    </div>`;
-  };
-  paint();
-
-  wrap.addEventListener("click", (e) => {
-    if (!e.target.closest("[data-dialog]")) return close();
-    const t = e.target.closest("[data-p],[data-pay],[data-m]");
-    if (!t) return;
-    if (t.dataset.p) { pi = +t.dataset.p; paint(); }
-    else if (t.dataset.pay) { method = t.dataset.pay; paint(); }
-    else if (t.dataset.m === "close") close();
-    else if (t.dataset.m === "pay") {
-      const p = CASH_PRODUCTS[pi];
-      App.charge(p.price, Math.round((p.price * p.bonusRate) / 100), method);
-      close();
-    }
-  });
+  openCoinCharge();
 }

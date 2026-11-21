@@ -386,6 +386,89 @@
 .story-notice { margin-bottom: 14px; color: var(--pixel-muted); font-size: .875rem; }
 .story-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 
+/* ---------- 코인 · 결제 (시뮬레이션) ---------- */
+.pixel-lock::before {
+  clip-path: polygon(25% 45%, 25% 20%, 35% 20%, 35% 8%, 65% 8%, 65% 20%, 75% 20%, 75% 45%, 90% 45%, 90% 95%, 10% 95%, 10% 45%, 37% 45%, 37% 22%, 63% 22%, 63% 45%, 10% 45%);
+}
+.coin-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 26px;
+  padding: 2px 8px;
+  border: 1px solid #211935;
+  background: #dbd0fa;
+  color: #211935;
+  font: 700 .8125rem/1 var(--font-mono);
+  white-space: nowrap;
+}
+.coin-chip b { padding: 2px 5px; background: #211935; color: var(--pixel-yellow); }
+.coin-chip:hover { background: #f2eafd; }
+.site-nav .coin-chip { border-color: var(--pixel-line); background: var(--pixel-panel); color: var(--pixel-yellow); min-height: 32px; }
+.site-nav .coin-chip b { background: var(--pixel-yellow); color: var(--pixel-black); }
+.site-nav .coin-chip:hover { border-color: var(--pixel-yellow); }
+
+.price-tag {
+  display: inline-block;
+  width: fit-content;
+  padding: 1px 6px;
+  border: 1px solid var(--pixel-line);
+  color: var(--pixel-yellow) !important;
+  font: 700 .75rem/1.5 var(--font-mono) !important;
+}
+.price-tag.free { border-color: var(--pixel-mint); background: var(--pixel-mint); color: #102019 !important; }
+.banner-price { margin-top: 12px; }
+
+.shop-panel .story-bar { background: var(--pixel-yellow); }
+.shop-body { padding: clamp(15px, 3.4vw, 28px); }
+.shop-banner { padding: 9px 12px; border: 1px dashed var(--pixel-line); color: var(--pixel-muted); font-size: .875rem; }
+.shop-banner b { color: var(--pixel-yellow); }
+.shop-banner.free { border-color: var(--pixel-mint); color: var(--pixel-mint); }
+.shop-heading { display: flex; align-items: baseline; gap: 8px; margin: 22px 0 10px; font-weight: 700; }
+.shop-heading span { color: var(--pixel-muted); font: 400 .8125rem/1 var(--font-mono); }
+.episode-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+.episode {
+  display: grid;
+  gap: 3px;
+  padding: 8px 6px;
+  border: 1px solid var(--pixel-line);
+  background: #14121a;
+  text-align: center;
+}
+.episode-no { font: 700 .875rem/1.2 var(--font-mono); }
+.episode-tag { display: inline-flex; justify-content: center; align-items: center; gap: 4px; color: var(--pixel-muted); font-size: .75rem; }
+.episode-tag .pixel-icon { width: 10px; height: 10px; }
+.episode.is-open { border-color: #6f8f7b; }
+.episode.is-open .episode-tag { color: var(--pixel-mint); }
+.episode.is-locked { opacity: .78; }
+.episode.is-locked .episode-tag { color: var(--pixel-yellow); }
+.episode:hover { border-color: var(--pixel-yellow); opacity: 1; }
+.shop-list { display: grid; gap: 8px; }
+.shop-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--pixel-line);
+  background: #14121a;
+}
+.shop-item-title { font-weight: 700; }
+.shop-item-desc { margin-top: 2px; color: var(--pixel-muted); font-size: .8125rem; line-height: 1.5; word-break: keep-all; }
+.shop-item-desc b { color: var(--pixel-yellow); }
+.shop-item-side { display: flex; flex-shrink: 0; align-items: center; gap: 10px; }
+.shop-price { color: var(--pixel-yellow); font: 700 .875rem/1 var(--font-mono); white-space: nowrap; }
+.shop-item .terminal-button { min-width: 86px; }
+.terminal-button:disabled { opacity: .45; cursor: default; transform: none; }
+.terminal-button:disabled:hover { border-color: #a69bac; color: var(--pixel-text); }
+.terminal-button.primary:disabled:hover { background: var(--pixel-yellow); color: #1c1508; }
+.shop-note { margin-top: 14px; color: var(--pixel-muted); font-size: .75rem; }
+@media (max-width: 600px) {
+  .episode-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .shop-item { flex-direction: column; align-items: stretch; }
+  .shop-item-side { justify-content: space-between; }
+}
+
 .mypage-site #main { width: 100%; flex: 1; }
 .account-window { overflow: hidden; }
 .account-header :is(button, a, label),

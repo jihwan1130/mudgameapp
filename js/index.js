@@ -43,7 +43,14 @@ function renderNav(save) {
     item("rec", "index.html", "folder", "추천") +
     item("all", "index.html?view=all", "files", "전체 작품") +
     '<a href="' + CONTINUE_URL + '">' + pixelIcon("play") + '이어하기' + (save ? '<span class="save-dot" aria-label="저장 있음"></span>' : "") + '</a>' +
-    '<a href="mypage.html">' + pixelIcon("user") + '마이페이지</a>';
+    '<a href="mypage.html">' + pixelIcon("user") + '마이페이지</a>' +
+    '<button type="button" class="coin-chip" data-charge aria-label="코인 충전">◎ ' + coinLabel(Wallet.coins) + ' <b>충전</b></button>';
+}
+
+function priceTag(work) {
+  return isFreeGame(work.id)
+    ? '<span class="price-tag free">무료</span>'
+    : '<span class="price-tag">1~' + WHATIF_PRICE.freeEpisodes + '화 무료 · 화당 ' + WHATIF_PRICE.episode + '코인</span>';
 }
 
 function renderHero(works, save) {
@@ -75,6 +82,7 @@ function renderHero(works, save) {
     '<p class="banner-genres">' + work.genres.map((genre) => '<span>' + escapeText(genre) + '</span>').join("") + '</p>',
     '<h2 id="game-title" tabindex="-1">' + escapeText(work.title) + '</h2>',
     '<p class="banner-description">' + escapeText(work.desc) + '</p>',
+    '<p class="banner-price">' + priceTag(work) + '</p>',
     '<div class="banner-actions"><a class="terminal-button primary" href="' + playUrl(work.id) + '">' + pixelIcon("play") + '플레이</a>',
     save?.id === work.id ? '<a class="terminal-button" href="' + CONTINUE_URL + '">이어하기</a>' : "",
     '</div></div>',
@@ -95,7 +103,9 @@ function renderList(works) {
       '<button type="button" class="poster-card" data-game="' + work.id + '" aria-pressed="' + selected + '">',
       '<span class="poster-image"><img src="' + work.poster + '" alt="" width="480" height="720" loading="lazy" decoding="async" /></span>',
       '<span class="poster-caption"><strong>' + escapeText(work.title) + '</strong>',
-      '<span>' + escapeText(work.genres.join(" · ")) + '</span></span>',
+      '<span>' + escapeText(work.genres.join(" · ")) + '</span>',
+      isFreeGame(work.id) ? '<span class="price-tag free">무료</span>' : '<span class="price-tag">◎ ' + WHATIF_PRICE.episode + '코인/화</span>',
+      '</span>',
       '</button>',
     ].join("");
   }).join("");
@@ -130,6 +140,7 @@ function move(step) {
 }
 
 document.addEventListener("click", (event) => {
+  if (event.target.closest("[data-charge]")) return openCoinCharge();
   const button = event.target.closest("[data-filter],[data-game],[data-move],[data-nav]");
   if (!button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
   const { filter, game, move: direction, nav: view } = button.dataset;
@@ -169,6 +180,7 @@ search.addEventListener("input", () => {
   state.search = search.value;
   render();
 });
+Wallet.onChange(() => renderNav(readWhatifSave()));
 window.addEventListener("storage", (event) => { if (event.key === WHATIF_SAVE_KEY) render(); });
 
 document.getElementById("archive-count").textContent = "등록 작품 " + WHATIF_GAMES.length + "편";
