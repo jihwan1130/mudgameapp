@@ -507,34 +507,34 @@
 
 /* Compact MP3 player */
 .bgm-player {
-  display: flex;
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) 25px;
   align-items: center;
-  gap: 8px;
-  padding: 5px 7px;
+  flex: 0 1 120px;
+  min-width: 108px;
+  max-width: 100%;
+  gap: 3px;
+  padding: 2px 3px;
   border: 1px solid var(--pixel-line);
   background: var(--pixel-panel);
   color: var(--pixel-yellow);
-  font: .6875rem/1.2 var(--font-mono);
+  font: .5625rem/1.1 var(--font-mono);
 }
 .bgm-toggle {
-  flex: 0 0 28px;
-  height: 28px;
+  width: 100%;
+  height: 22px;
   border: 1px solid var(--pixel-yellow);
   background: var(--pixel-raised);
   color: inherit;
   cursor: pointer;
 }
 .bgm-toggle:hover { background: var(--pixel-yellow); color: var(--pixel-black); }
-.bgm-track { min-width: 0; width: clamp(105px, 13vw, 170px); }
-.bgm-display { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 5px; }
+.bgm-track { min-width: 0; }
+.bgm-display { display: grid; }
+.bgm-display > :first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bgm-time { color: var(--pixel-muted); white-space: nowrap; }
-.bgm-player input { display: block; height: 12px; margin: 0; accent-color: var(--pixel-yellow); cursor: pointer; }
-.bgm-seek { width: 100%; }
-.bgm-volume { display: grid; gap: 2px; color: var(--pixel-lavender); }
-.bgm-volume input { width: 38px; }
+.bgm-player input { display: block; width: 100%; min-width: 0; height: 10px; margin: 0; accent-color: var(--pixel-yellow); cursor: pointer; }
+.bgm-volume { display: grid; min-width: 0; gap: 2px; color: var(--pixel-lavender); }
 @media (max-width: 1100px) {
   .topbar:has(.bgm-player) { flex-wrap: wrap; gap: 8px 12px; padding-block: 7px; }
-}
-@media (max-width: 360px) {
-  .bgm-player { gap: 5px; padding-inline: 5px; }
 }
