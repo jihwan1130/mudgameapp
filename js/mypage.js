@@ -43,6 +43,7 @@ function ProfileCard() {
         <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-sub">
           ${stats.map(([l, v]) => `<span>${l} <b class="font-mono text-ink">${v}</b></span>`).join("")}
         </div>
+        <a href="serial.html" class="terminal-button primary mt-3">내 소설 연재하기</a>
       </div>
     </div>
     <div class="flex items-center justify-between gap-4 rounded-card bg-soft px-5 py-4 md:ml-auto md:min-w-[320px]">

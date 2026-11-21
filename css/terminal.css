@@ -565,6 +565,57 @@
   background: currentColor;
 }
 .bgm-player input:disabled { opacity: .55; cursor: default; }
+.serial-main { display: grid; align-content: start; gap: 18px; }
+.serial-main .archive-heading { margin: 0; }
+.serial-note, .serial-status { color: var(--pixel-muted); font-size: .875rem; }
+.serial-status:not(:empty) { margin-top: 12px; color: var(--pixel-mint); }
+.serial-panel { padding: clamp(12px, 3vw, 24px); }
+.serial-stack { display: grid; gap: 12px; min-width: 0; }
+.serial-main [hidden] { display: none; }
+.serial-stack label { display: grid; gap: 6px; font-size: .875rem; }
+.serial-stack input, .serial-stack textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--pixel-line);
+  background: var(--pixel-bg);
+  color: var(--pixel-text);
+}
+.serial-stack textarea { resize: vertical; }
+.serial-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.serial-workspace { display: grid; gap: 20px; }
+.serial-workspace > * { min-width: 0; }
+.serial-tree { display: grid; gap: 8px; margin-top: 8px; }
+.serial-tree .serial-tree {
+  margin-left: 10px;
+  padding-left: 12px;
+  border-left: 1px solid var(--pixel-line);
+}
+.serial-tree .serial-tree > li { position: relative; }
+.serial-tree .serial-tree > li::before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  left: -12px;
+  width: 11px;
+  border-top: 1px solid var(--pixel-line);
+}
+.serial-node { max-width: 100%; text-align: left; overflow-wrap: anywhere; }
+.serial-node[aria-pressed="true"] { border-color: var(--pixel-yellow); color: var(--pixel-yellow); }
+.serial-preview { padding: 12px; border: 1px solid var(--pixel-line); background: var(--pixel-raised); }
+.serial-preview p { white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (min-width: 760px) {
+  .serial-workspace { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .serial-node { animation: serial-reveal .3s both; }
+  .serial-tree .serial-tree .serial-node { animation-delay: .15s; }
+  .serial-tree .serial-tree .serial-tree .serial-node { animation-delay: .3s; }
+  @keyframes serial-reveal {
+    from { opacity: 0; transform: translateX(-5px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+}
 @media (max-width: 1100px) {
   .topbar:has(.bgm-player) { flex-wrap: wrap; gap: 8px 12px; padding-block: 7px; }
 }

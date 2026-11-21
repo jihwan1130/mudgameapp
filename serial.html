@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#100f15">
+  <title>내 소설 연재하기 — WHATIF</title>
+  <link rel="icon" href="assets/whatif.png" type="image/png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/terminal.css">
+</head>
+<body class="terminal-site">
+  <header class="site-header">
+    <div class="site-frame topbar">
+      <a href="index.html" class="brand" aria-label="WHATIF 홈"><img src="assets/whatif.png" alt="" width="1240" height="368"></a>
+      <nav class="site-nav" aria-label="메뉴"><a href="mypage.html">← 마이페이지</a></nav>
+    </div>
+  </header>
+  <main class="site-frame archive-main serial-main">
+    <div class="archive-heading"><h1>내 소설 연재하기</h1></div>
+    <p class="serial-note">원고 등록부터 분기 편집까지 체험할 수 있는 데모예요. AI 분석과 수정은 예시로 연출되며, 원고는 이 화면에서만 사용돼요.</p>
+    <section class="pixel-window">
+      <div class="window-bar"><h2 class="window-label">작성한 소설 등록하기</h2><span class="window-lines" aria-hidden="true"></span></div>
+      <div class="serial-panel">
+        <form id="manuscript" class="serial-stack">
+          <label>작품 제목<input name="title" required maxlength="80" placeholder="작품 제목을 입력하세요"></label>
+          <label>소설 원고<textarea name="story" rows="5" required maxlength="30000" placeholder="작성한 소설을 붙여 넣으세요"></textarea></label>
+          <div class="serial-actions">
+            <button type="button" class="terminal-button" id="load-sample">예시 원고 불러오기</button>
+            <button type="submit" class="terminal-button primary">원고 등록하기</button>
+            <button type="button" class="terminal-button" id="split-story" disabled>분기형으로 나누기</button>
+          </div>
+        </form>
+        <p class="serial-status" id="serial-status" role="status"></p>
+      </div>
+    </section>
+    <section class="pixel-window" id="branches" hidden>
+      <div class="window-bar"><h2 class="window-label">트리형 구조도</h2><span class="window-lines" aria-hidden="true"></span></div>
+      <div class="serial-panel serial-workspace">
+        <div>
+          <p class="serial-note">분기를 선택하면 장면을 수정할 수 있어요.</p>
+          <div id="branch-tree"></div>
+        </div>
+        <form id="branch-editor" class="serial-stack" hidden>
+          <h3 id="branch-heading"></h3>
+          <label>장면 내용<textarea name="scene" rows="6" required></textarea></label>
+          <button class="terminal-button primary" type="submit">분기 수정 저장</button>
+          <label>AI 수정 지시<input name="instruction" maxlength="200" placeholder="예: 긴장감을 더 높여줘"></label>
+          <button class="terminal-button" id="preview-rewrite" type="button">AI 수정 예시 보기</button>
+          <div class="serial-stack serial-preview" id="rewrite" hidden>
+            <p class="serial-note" id="rewrite-direction"></p>
+            <p id="rewrite-text"></p>
+            <button class="terminal-button primary" id="apply-rewrite" type="button">이 분기에 적용</button>
+          </div>
+          <p class="serial-status" id="editor-status" role="status"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+  <script src="js/serial.js"></script>
+  <script src="js/bgm.js"></script>
+</body>
+</html>
