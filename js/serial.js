@@ -14,6 +14,25 @@
   const rewriteText = byId("rewrite-text");
   const editorStatus = byId("editor-status");
   const preview = byId("preview-rewrite");
+  const zombie = gameById("survival-1");
+  const registeredTree = [{
+    label: zombie.title,
+    text: zombie.intro.join("\n\n"),
+    children: [
+      {
+        label: "A · 옥상 열쇠를 쓴다",
+        text: "28층으로 올라가는 마지막 계단 끝에 옥상 철문이 있다. 열쇠를 돌리자 빗소리가 틈 사이로 밀려든다.",
+        children: [{ label: "옥상 · 옆 동을 살핀다", text: "옥상 난간 너머 옆 동 비상등이 깜빡인다. 두 건물 사이에 작업용 발판이 걸려 있다." }],
+      },
+      {
+        label: "B · 아래층 소리를 확인한다",
+        text: "27층에서 한 층 내려가자 방화문 아래로 손전등 불빛이 스친다. 문 너머에서 누군가 두 번, 잠시 뒤 한 번 더 문을 두드린다.",
+        children: [{ label: "26층 · 쪽지를 펼친다", text: "어젯밤 받은 쪽지를 펼치니 ‘두 번, 그리고 한 번. 우리 쪽 신호’라고 적혀 있다." }],
+      },
+    ],
+  }];
+  byId("registered-title").textContent = zombie.title;
+  byId("registered-poster").src = zombie.poster;
 
   let draft;
   let selected;
@@ -77,6 +96,21 @@
     return list;
   }
 
+  function showTree(structure, heading) {
+    editor.hidden = true;
+    byId("branch-tree-heading").textContent = heading;
+    tree.replaceChildren(makeTree(structure));
+    workspace.hidden = false;
+    tree.querySelector("button").focus();
+  }
+
+  byId("view-registered").addEventListener("click", () => {
+    clearTimeout(timer);
+    split.disabled = !draft;
+    status.textContent = "";
+    showTree(registeredTree, `${zombie.title} · 초반 분기 예시`);
+  });
+
   split.addEventListener("click", () => {
     split.disabled = true;
     status.textContent = "원고에서 선택 지점을 찾는 중… (데모)";
@@ -91,11 +125,8 @@
             children: [{ label: "엔딩 B · 귀환", text: "새로운 길은 뜻밖에도 이 이야기의 시작점으로 이어졌다." }] },
         ],
       }];
-      editor.hidden = true;
-      tree.replaceChildren(makeTree(structure));
-      workspace.hidden = false;
       status.textContent = "등록한 원고에 예시 선택지 2개와 엔딩 2개를 연결했어요.";
-      tree.querySelector("button").focus();
+      showTree(structure, "트리형 구조도");
     }, 550);
   });
 

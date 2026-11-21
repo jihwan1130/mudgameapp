@@ -570,6 +570,8 @@
 .serial-note, .serial-status { color: var(--pixel-muted); font-size: .875rem; }
 .serial-status:not(:empty) { margin-top: 12px; color: var(--pixel-mint); }
 .serial-panel { padding: clamp(12px, 3vw, 24px); }
+.serial-registered { display: flex; align-items: center; gap: 14px; }
+.serial-registered img { flex: 0 0 64px; border: 1px solid var(--pixel-line); }
 .serial-stack { display: grid; gap: 12px; min-width: 0; }
 .serial-main [hidden] { display: none; }
 .serial-stack label { display: grid; gap: 6px; font-size: .875rem; }

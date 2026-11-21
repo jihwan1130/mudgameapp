@@ -19,6 +19,17 @@
   <main class="site-frame archive-main serial-main">
     <div class="archive-heading"><h1>내 소설 연재하기</h1></div>
     <p class="serial-note">원고 등록부터 분기 편집까지 체험할 수 있는 데모예요. AI 분석과 수정은 예시로 연출되며, 원고는 이 화면에서만 사용돼요.</p>
+    <section class="pixel-window" aria-labelledby="registered-heading">
+      <div class="window-bar"><h2 class="window-label" id="registered-heading">등록된 작품</h2><span class="window-lines" aria-hidden="true"></span></div>
+      <div class="serial-panel serial-registered">
+        <img id="registered-poster" alt="" width="64" height="96">
+        <div class="serial-stack">
+          <h3 id="registered-title"></h3>
+          <p class="serial-note">27층 비상계단에서 갈라지는 초반 장면 일부를 볼 수 있어요.</p>
+          <button class="terminal-button primary" id="view-registered" type="button" aria-controls="branches">분기별로 보기</button>
+        </div>
+      </div>
+    </section>
     <section class="pixel-window">
       <div class="window-bar"><h2 class="window-label">작성한 소설 등록하기</h2><span class="window-lines" aria-hidden="true"></span></div>
       <div class="serial-panel">
@@ -35,9 +46,9 @@
       </div>
     </section>
     <section class="pixel-window" id="branches" hidden>
-      <div class="window-bar"><h2 class="window-label">트리형 구조도</h2><span class="window-lines" aria-hidden="true"></span></div>
+      <div class="window-bar"><h2 class="window-label" id="branch-tree-heading">트리형 구조도</h2><span class="window-lines" aria-hidden="true"></span></div>
       <div class="serial-panel serial-workspace">
-        <div>
+        <div id="branch-tree-panel" aria-labelledby="branch-tree-heading">
           <p class="serial-note">분기를 선택하면 장면을 수정할 수 있어요.</p>
           <div id="branch-tree"></div>
         </div>
@@ -57,6 +68,7 @@
       </div>
     </section>
   </main>
+  <script src="js/games.js"></script>
   <script src="js/serial.js"></script>
   <script src="js/bgm.js"></script>
 </body>
