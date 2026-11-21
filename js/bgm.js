@@ -11,23 +11,21 @@
   const player = document.createElement("div");
   player.className = "bgm-player";
   player.setAttribute("role", "group");
-  player.setAttribute("aria-label", "Amber Archive 배경 음악");
+  player.setAttribute("aria-label", "배경 음악");
   player.innerHTML = `
     <button class="bgm-toggle" type="button" aria-label="배경 음악 재생">▶</button>
     <div class="bgm-track">
-      <div class="bgm-display"><span>Amber Archive</span><span class="bgm-time">0:00 / --:--</span></div>
+      <span class="bgm-time">0:00 / --:--</span>
       <input class="bgm-seek" type="range" min="0" max="1" step="0.1" value="0" aria-label="재생 위치" disabled>
     </div>
-    <label class="bgm-volume"><span aria-hidden="true">VOL</span>
-      <input type="range" min="0" max="1" step="0.05" value="0.35" aria-label="배경 음악 볼륨">
-    </label>`;
+    <input class="bgm-volume" type="range" min="0" max="1" step="0.05" value="0.35" aria-label="배경 음악 볼륨">`;
   brand.after(player);
 
   const audio = new Audio("assets/amber-archive.mp3");
   const toggle = player.querySelector(".bgm-toggle");
   const time = player.querySelector(".bgm-time");
   const seek = player.querySelector(".bgm-seek");
-  const volume = player.querySelector(".bgm-volume input");
+  const volume = player.querySelector(".bgm-volume");
   audio.volume = saved.volume ?? Number(volume.value);
   volume.value = audio.volume;
 
@@ -40,6 +38,10 @@
     return Math.floor(seconds / 60) + ":" + String(Math.floor(seconds % 60)).padStart(2, "0");
   }
 
+  function paintRange(input) {
+    input.style.setProperty("--bgm-fill", `${100 * Number(input.value) / Number(input.max)}%`);
+  }
+
   function render() {
     const paused = audio.paused || audio.ended;
     toggle.textContent = paused ? "▶" : "Ⅱ";
@@ -47,6 +49,7 @@
       ? "배경 음악 다시 재생" : paused ? "배경 음악 재생" : "배경 음악 일시정지");
     time.textContent = clock(position) + " / " + clock(audio.duration);
     seek.value = position;
+    paintRange(seek);
   }
 
   function play() {
@@ -95,11 +98,13 @@
   });
   volume.addEventListener("input", () => {
     audio.volume = Number(volume.value);
+    paintRange(volume);
     save();
   });
   window.addEventListener("pagehide", save);
   window.addEventListener("pageshow", (event) => {
     if (event.persisted) location.reload();
   });
+  paintRange(volume);
   render();
 })();
